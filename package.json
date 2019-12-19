@@ -19,6 +19,7 @@
     "js-cookie": "2.2.0",
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",
+    "true-case-path": "^2.2.1",
     "vue": "2.5.17",
     "vue-router": "3.0.1",
     "vuex": "3.0.1"
@@ -67,7 +68,7 @@
     "vue-loader": "15.3.0",
     "vue-style-loader": "4.1.2",
     "vue-template-compiler": "2.5.17",
-    "webpack": "^4.16.5",
+    "webpack": "^4.41.4",
     "webpack-bundle-analyzer": "2.13.1",
     "webpack-cli": "3.1.0",
     "webpack-dev-server": "3.1.5",
