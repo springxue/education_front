@@ -24,7 +24,27 @@ import Layout from '../views/layout/Layout'
 export const constantRouterMap = [
   { path: '/login', component: () => import('@/views/login/index'), hidden: true },
   { path: '/404', component: () => import('@/views/404'), hidden: true },
-
+  {
+    path: '/teacher',
+    component: Layout,
+    redirect: '/teacher/list',
+    name: '讲师管理',
+    meta: { title: '讲师管理', icon: 'example' },
+    children: [
+      {
+      path: 'list',
+      name: '讲师列表',
+      component: () => import('@/views/edu/teacher/index'),
+      meta: { title: '讲师列表', icon: 'table' }
+    },
+      {
+        path: 'save',
+        name: '添加讲师',
+        component: () => import('@/views/tree/index'),
+        meta: { title: '添加讲师', icon: 'tree' }
+      }
+      ]
+  },
   {
     path: '/',
     component: Layout,
