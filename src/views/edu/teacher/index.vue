@@ -106,21 +106,65 @@ export default {
     getListTeacher(page = 1) {
       teacher.getTeacherPageList(page, this.limit, this.searchObj)
         .then(response => {
-          console.log(response.data.items)
-          this.list = response.data.items
-          console.log(response.data.total)
-          this.total = response.data.total
+          console.log(response.data.items);
+          this.list = response.data.items;
+          console.log(response.data.total);
+          this.total = response.data.total;
           this.listLoading = false
         })// 如果请求成功，返回状态码20000，执行then里面的操作
         .catch(response => {
 
         })// 请求失败执行这里面的操作
     },
+    //清空查询条件
     resetData() {
-      this.searchObj = {}
-      this.fetchData()
+      this.searchObj = {};
+      this.getListTeacher()
+    },
+    removeDataById(id){
+      console.log(id);
+      this.$confirm('此操作将删除该教师信息, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        //调用方法进行删除
+        return teacher.deleteTeacherById(id);//return表示后面then还会执行
+
+        }).then(()=>{
+        this.getListTeacher();
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+      }).catch(response => {
+        if(response==='cancel'){
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        }else {
+          this.$message({
+            type: 'error',
+            message: '删除失败'
+          })
+        }
+
+      });
+      // teacher.deleteTeacherById(id)
+      //        .then(response=>{
+      //           console.log(response)
+      //        })
+      //        .catch(reason => {
+      //
+      //        })
+    },
+    open() {
+
     }
   }
+
+
 }
 </script>
 

@@ -13,5 +13,12 @@ export default {
       // 传递条件对象，如果传递json数据，使用data。如果不是json，使用params
       data: searchObj
     })
+  },
+  //删除教师
+  deleteTeacherById(id){
+    return request({
+      url: '/eduService/teacher/'+id,
+      method:'delete',
+    })
   }
 }
