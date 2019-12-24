@@ -38,7 +38,7 @@ export default {
   },
   //修改讲师信息
   updateTeacherInfo(teahcer){
-    request({
+    return  request({
       url:'/eduService/teacher/updateTeacherInfo/'+teahcer.id,
       method:'post',
       data:teahcer

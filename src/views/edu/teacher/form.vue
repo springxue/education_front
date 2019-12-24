@@ -65,7 +65,7 @@ export default {
       }else {
         console.log("====updateTeacher====")
         console.log(this.teacher)
-        this.updateTeacher(this.teacher)
+        this.updateTeacher()
       }
     },
     // 添加讲师的方法
@@ -91,15 +91,16 @@ export default {
         })
     },
     //修改讲师信息
-    updateTeacher(aaaa){
+    updateTeacher(){
       this.saveBtnDisabled = true
-      teacher.updateTeacherInfo(aaaa).then(response => {
-        return this.$message({
+      teacher.updateTeacherInfo(this.teacher)
+        .then(response => {
+        this.$message({
           type: 'success',
           message: '修改成功!'
         })
       }).then(resposne => {
-        this.$router.push({ path: '/edu/teacher' })
+        this.$router.push({ path: '/teacher' })
       }).catch((response) => {
         // console.log(response)
         this.$message({
