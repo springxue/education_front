@@ -30,31 +30,44 @@
 
 <script>
 import teacher from '@/api/teacher'
+const defaultFrom={
+  name: '',
+  sort: 0,
+  level: '',
+  career: '',
+  intro: '',
+  avatar: ''
+};
+
 export default {
   data() {
     return {
-      teacher: {
-        name: '',
-        sort: 0,
-        level: 1,
-        career: '',
-        intro: '',
-        avatar: ''
-      },
-      saveBtnDisabled: false // 保存按钮是否禁用,
-
-    }
+      teacher:defaultFrom,
+      saveBtnDisabled : false // 保存按钮是否禁用,
+      }
+  },
+  watch:{
+      $route(to,from){
+        console.log('watch $route')
+        this.init()
+      }
   },
   created() {
-    //在页面加载钱，判断路由里是否有id值
-    //如果有id值，调用方法根据id查询
-    //从路由里面取值
-    if(this.$route.params && this.$route.params.id){
-      const id=this.$route.params.id;
-      this.getTeacherInfoById(id)
-    }
+      this.init()
   },
   methods: {
+    init(){
+      //在页面加载钱，判断路由里是否有id值
+      //如果有id值，调用方法根据id查询
+      //从路由里面取值
+      if(this.$route.params && this.$route.params.id){//修改数据回显
+        const id=this.$route.params.id;
+        this.getTeacherInfoById(id)
+      }else {//添加
+        //表单数据清空
+        this.teacher={...defaultFrom}//把defaultForm的值复制给this.teacher
+      }
+    },
     // 添加和修改都使用同一个表单
     saveOrUpdate() {
       this.saveBtnDisabled = true
