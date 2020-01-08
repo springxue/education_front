@@ -162,7 +162,7 @@ export default {
     getTeacherInfoById(id){
       teacher.getTeacherInfoById(id)
              .then(response=>{
-               console.log(response)
+               console.log(response);
              this.teacher=response.data.eduTeacher
              }).catch(response=>{
                 console.log("555")
