@@ -14,5 +14,12 @@ export default {
         url:'/eduService/eduSubject/'+id,
         method:'delete'
       })
-    }
+    },
+  addSubject(eduSubject){
+    return request({
+      url:'/eduService/eduSubject/add',
+      method:'post',
+      data:eduSubject
+    })
+  }
 }

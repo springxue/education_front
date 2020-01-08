@@ -23,7 +23,7 @@
             v-if="node.level == 1"
             type="text"
             size="mini"
-            @click="() => {dialogFormVisible=true;subject.parentId=data.id}">添加二级分类</el-button>
+            @click="() => {dialogFormVisible=true;subject.parentId=data.id;subject.title=''}">添加二级分类</el-button>
           <el-button
             v-if="node.level == 2 || node.level == 1"
             type="text"
@@ -41,7 +41,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="appendSubject()">确 定</el-button>
+        <el-button type="primary" @click="addSubject()">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -50,6 +50,11 @@
 
 <script>
   import subject from "@/api/subject";
+  const defaultSubject={
+   tile:'',
+    parentId:''
+  };
+
     export default {
         data(){
           return{
@@ -94,6 +99,10 @@
               message: '删除成功!'
             })
           }).catch(response => {
+            // this.$message({
+            //   type: 'error',
+            //   message: '该分类下有二级分类不能删除或者该分类已被删除'
+            // })
             console.log(111)
             console.log(response);
             if(response==='cancel'){
@@ -101,11 +110,6 @@
                 type: 'info',
                 message: '已取消删除'
               })
-            }else {
-              // this.$message({
-              //   type: 'error',
-              //   message: '该分类下有二级分类或者该分类已被删除'
-              // })
             }
 
           });
@@ -127,7 +131,35 @@
         //点击以及分类弹出添加框
         showTopLevelDialog(){
           this.dialogFormVisible=true
-        }
+        },
+        //添加分类方法
+        addSubject(){
+          //判断添加的是一级分类还是二级分类
+          //根据subject里面parentId判断，有parentid就是二级分类
+          this.dialogFormVisible=false;
+          if(this.subject.parentId==''){
+            this.subject.parentId='0'
+          }
+          console.log(this.subject)
+          subject.addSubject(this.subject)
+                .then(response=>{
+                  console.log(response)
+                  if(response.success==true){
+                    this.$message({
+                      type: 'success',
+                      message: '添加分类成功'
+                    })
+                    this.getAllSubject();
+                    this.subject={...defaultSubject}
+                  }
+                })
+                .catch(response=>{
+                  this.$message({
+                    type: 'error',
+                    message: '添加分类失败'
+                  })
+                })
+  }
       }
     }
 </script>
