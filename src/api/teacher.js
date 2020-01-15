@@ -43,5 +43,12 @@ export default {
       method:'post',
       data:teahcer
     })
+  },
+  //获取所有讲师信息
+  getAllTeachers(){
+    return request({
+      url:'/eduService/teacher',
+      method:'get',
+    })
   }
 }
