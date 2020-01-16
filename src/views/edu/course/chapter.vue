@@ -31,10 +31,10 @@
       },
       methods:{
         previous(){
-          this.$router.push({path:'/course/info/1'})
+          this.$router.push({path:'/course/info/'+this.$route.params.id})
         },
         next(){
-          this.$router.push({path:'/course/publish/1'})
+          this.$router.push({path:'/course/publish/'+this.$route.params.id})
         }
       }
     }
