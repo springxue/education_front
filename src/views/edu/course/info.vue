@@ -22,10 +22,18 @@
       <el-form-item label="课程类别">
         <el-select
           v-model="courseInfo.subjectParentId"
-          placeholder="请选择">
+          placeholder="请选择" @change="renderSecondSubject">
           <el-option
             v-for="subject in topLevelSubjectList"
             :key="subject.id"
+            :label="subject.title"
+            :value="subject.id"/>
+        </el-select>
+        <!-- 二级分类 -->
+        <el-select v-model="courseInfo.subjectId" placeholder="请选择">
+          <el-option
+            v-for="subject in secondLevelSubjectList"
+            :key="subject.value"
             :label="subject.title"
             :value="subject.id"/>
         </el-select>
@@ -35,7 +43,7 @@
       <el-form-item label="课程讲师">
         <el-select
           v-model="courseInfo.teacherId"
-          placeholder="请选择">
+          placeholder="请选择" >
           <el-option
             v-for="teacher in teacherList"
             :key="teacher.id"
@@ -52,7 +60,19 @@
         <el-form-item label="课程简介">
         <el-input v-model="courseInfo.description" placeholder=" 示例：简介"/>
       </el-form-item>
-        <!-- 课程封面 TODO -->
+      <!-- 课程封面-->
+      <el-form-item label="课程封面">
+
+        <el-upload
+          :show-file-list="false"
+          :on-success="handleAvatarSuccess"
+          :before-upload="beforeAvatarUpload"
+          :action="BASE_API+'/eduService/oss/upload?type=cover'"
+          class="avatar-uploader">
+          <img :src="courseInfo.cover">
+        </el-upload>
+
+      </el-form-item>
 
         <el-form-item label="课程价格">
           <el-input-number :min="0" v-model="courseInfo.price" controls-position="right" placeholder="免费课程请设置为0元"/> 元
@@ -70,7 +90,7 @@
 <script>
   import course from '@/api/course'
   import teacher from '@/api/teacher'
-
+  import subject from '@/api/subject'
   const defaultFrom={
     title:'',
     lessonNum:0,
@@ -79,7 +99,7 @@
     teacherId:'',
     description:'',
     subjectParentId:'',
-    cover:''
+    cover:'/static/cover.jpg'
   };
 
     export default {
@@ -97,7 +117,8 @@
             },
             teacherList:[],//存储所有的讲师信息（集合 ）
             topLevelSubjectList:[],//一级分类集合
-            secondLevelSubjectList:[]//二级分类集合
+            secondLevelSubjectList:[],//二级分类集合
+            BASE_API: process.env.BASE_API // 接口API地址
           }
         },
       watch:{
@@ -169,7 +190,49 @@
         },
         //获取所有一级分类
         getTopLevelSubjectList(){
+            subject.getNestedTreeList()
+              .then(response=>{
+                console.log(response.data)
+                this.topLevelSubjectList=response.data.items
+              })
+          .catch(resopnse=>{
 
+          })
+        },
+        //触发change事件，渲染二级分类
+        renderSecondSubject(value){
+            //获取到选择的以及分类的id值
+          //根据一级分类id值，获取下面所有二级分类
+          //1、遍历所有一级分类集合
+          //2、获取每个一级分类
+          //3、判断value值和遍历出来的每个一级分类id值是否一样，如果一样，获取下面的二级分类，即child
+
+          for(let i=0; i<this.topLevelSubjectList.length; i++){
+            let topLevelSubject=this.topLevelSubjectList[i]
+            if(topLevelSubject.id===value){
+              this.secondLevelSubjectList=topLevelSubject.children
+              this.courseInfo.subjectId = ''
+            }
+          }
+        },
+        //上传封面之前的方法
+        beforeAvatarUpload(file){
+          //设置允许上传图片的格式，上传图片的大小
+          const isJPG = file.type === 'image/jpeg'
+          const isLt2M = file.size / 1024 / 1024 < 2
+
+          if (!isJPG) {
+            this.$message.error('上传头像图片只能是 JPG 格式!')
+          }
+          if (!isLt2M) {
+            this.$message.error('上传头像图片大小不能超过 2MB!')
+          }
+          return isJPG && isLt2M
+        },
+        //上传封面之后的方法
+        handleAvatarSuccess(res,file){
+        //上传成功之后，获取上传图片的oss路径，赋值给课程封面字段
+          this.courseInfo.cover=res.data.imgUrl
         }
       }
     }

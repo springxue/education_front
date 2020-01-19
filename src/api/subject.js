@@ -21,5 +21,17 @@ export default {
       method:'post',
       data:eduSubject
     })
+  },
+  getAllTopLevelSubjects(){
+    return request({
+      url:'/eduService/eduSubject/getAllTopLevelSubjects',
+      method:'get',
+    })
+  },
+  getSecondLevelSubjectByParentId(id){
+    return request({
+      url:'/eduService/eduSubject/getSecondLevelSubjectByParentId/'+id,
+      method:'get',
+    })
   }
 }
