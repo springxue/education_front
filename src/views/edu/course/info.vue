@@ -111,6 +111,7 @@
               lessonNum:0,
               price:0,
               subjectId:'',
+              subjectParentId:'',
               teacherId:'',
               description:'',
               cover:''
@@ -128,8 +129,7 @@
         }
       },
       created() {
-        this.getTeacherList()
-        this.getTopLevelSubjectList()
+
         this.init()
       },
       methods:{
@@ -138,8 +138,11 @@
           if(this.$route.params && this.$route.params.id){
             const id=this.$route.params.id;
             this.getCourseInfoById(id)
+            this.getTeacherInfoById(this.courseInfo.teacherId)
           }else {
             this.courseInfo={...defaultFrom}
+            this.getTeacherList()
+            this.getTopLevelSubjectList()
           }
         },
 
@@ -177,12 +180,23 @@
 
           })
         },
+        //根据课程id查询课程信息
         getCourseInfoById(id){
-
           course.getCourseInfoById(id)
           .then(response=>{
-
+            console.log(response.data)
             this.courseInfo=response.data.items
+            //1、查询所有一级分类
+            subject.getNestedTreeList()
+            .then(response=>{
+                  this.topLevelSubjectList=response.data.items
+              for(let i=0;i<this.topLevelSubjectList.length;i++){
+                let topLevelSubject=this.topLevelSubjectList[i]
+                if(topLevelSubject.id===this.courseInfo.subjectParentId){
+                    this.secondLevelSubjectList=topLevelSubject.children
+                }
+              }
+            })
           })
           .catch(response=>{
 
@@ -233,6 +247,14 @@
         handleAvatarSuccess(res,file){
         //上传成功之后，获取上传图片的oss路径，赋值给课程封面字段
           this.courseInfo.cover=res.data.imgUrl
+        },
+        //根据id获取教师信息
+        getTeacherInfoById(id){
+         teacher.getAllTeachers()
+          .then(response=>{
+            this.teacherList=response.data.items
+
+          })
         }
       }
     }
