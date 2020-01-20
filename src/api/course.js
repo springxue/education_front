@@ -20,5 +20,12 @@ export default {
       method:'post',
       data:courseInfo
     })
+  },
+  getEduCoursePageList(page,limit,eduCourse){
+    return request({
+      url:'/eduService/eduCourse/pageList/'+page+'/'+limit,
+      method:'post',
+      data:eduCourse
+    })
   }
 }
