@@ -125,7 +125,7 @@
     :total="total"
     style="padding: 30px 0; text-align: center;"
     layout="total, prev, pager, next, jumper"
-    @current-change="fetchData"
+    @current-change="getPageList"
   />
 </div>
 </template>
@@ -155,11 +155,11 @@
       },
       methods:{
           //获取分页列表信息
-          getPageList(){
-            course.getEduCoursePageList(this.page,this.limit,this.eduCourse)
+          getPageList(page=1){
+            course.getEduCoursePageList(page,this.limit,this.eduCourse)
             .then(response=>{
               this.list=response.data.items
-              console.log(response)
+              this.total=response.data.total
             })
           }
       }
