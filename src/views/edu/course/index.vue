@@ -132,6 +132,8 @@
 
 <script>
   import course from '@/api/course'
+  import subject from '@/api/subject'
+  import teacher from '@/api/teacher'
     export default {
         data(){
           return{
@@ -142,18 +144,27 @@
             limit: 10, // 每页显示几行
             searchObj:{
               subjectParentId:'',
-
               title:'',
-
+              subjectId:'',
+              teacherId:'',
             },
-            eduCourse:{}
+            eduCourse:{},
+            subjectNestedList:{},
+            subSubjectList:{},
+            teacherList:{}
 
           }
         },
       created() {
-          this.getPageList();
+          this.init()
       },
       methods:{
+          init(){
+            this.getPageList()
+            this.getSubjectInfo()
+            this.getAllTeacher()
+          },
+
           //获取分页列表信息
           getPageList(page=1){
             course.getEduCoursePageList(page,this.limit,this.eduCourse)
@@ -161,7 +172,50 @@
               this.list=response.data.items
               this.total=response.data.total
             })
+          },
+        //获取课程类别
+        getSubjectInfo(){
+            subject.getNestedTreeList()
+          .then(response=>{
+            console.log(response.data)
+              this.subjectNestedList=response.data.items
+          }).catch(response=>{
+            console.log(response)
+            })
+        },
+        //一级分类变化时触发渲染二级分类
+        subjectLevelOneChanged(id){
+          console.log(id)
+          for(let i=0;i<this.subjectNestedList.length;i++){
+            const topLevelSubject=this.subjectNestedList[i]
+            if(topLevelSubject.id===id){
+                  this.subSubjectList=topLevelSubject.children
+              this.searchObj.subjectId=''
+            }
           }
+        },
+        //获取查询条件中讲师下拉
+        getAllTeacher(){
+            teacher.getAllTeachers()
+          .then(response=>{
+            console.log(response.data)
+            this.teacherList=response.data.items
+          })
+        },
+        //清空查询条件
+        resetData(){
+            this.searchObj={}
+        },
+        //条件查询
+        fetchData(){
+            console.log(this.searchObj)
+            course.getEduCoursePageList(this.page,this.limit,this.searchObj)
+            .then(response=>{
+              console.log(response.data.items)
+              this.list=response.data.items
+              this.total=response.data.total
+            })
+        }
       }
     }
 </script>
