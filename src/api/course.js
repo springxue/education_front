@@ -27,5 +27,12 @@ export default {
       method:'post',
       data:eduCourse
     })
+  },
+  //根据id删除课程
+  deleteCourseById(id){
+    return request({
+      url:'/eduService/eduCourse/deleteCourseById/'+id,
+      method:'get'
+    })
   }
 }

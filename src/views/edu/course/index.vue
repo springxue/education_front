@@ -113,7 +113,7 @@
         <router-link :to="'/edu/course/chapter/'+scope.row.id">
           <el-button type="text" size="mini" icon="el-icon-edit">编辑课程大纲</el-button>
         </router-link>
-        <el-button type="text" size="mini" icon="el-icon-delete">删除</el-button>
+        <el-button type="text" size="mini" icon="el-icon-delete" @click="deleteCourse(scope.row.id)">删除</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -214,6 +214,21 @@
               console.log(response.data.items)
               this.list=response.data.items
               this.total=response.data.total
+            })
+        },
+        //删除课程
+        deleteCourse(id){
+            this.$confirm('此操作将会永久删除该课程，是否继续？','提示',{
+              confirmButtonText:'确定',
+              cancelButtonText:'取消',
+              type:"warning"
+            }).then(()=>{
+              //调用方法进行删除
+              //return表示后面then还会执行
+              course.deleteCourseById(id)
+              .then(response=>{
+
+              })
             })
         }
       }
